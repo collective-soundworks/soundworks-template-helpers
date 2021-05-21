@@ -6,6 +6,9 @@ import './components/sw-plugin-platform.js';
 import './components/sw-plugin-default.js';
 import './components/sw-plugin-error.js';
 
+let _html = html;
+let _render = render;
+
 const startedMsg = {
   'audio-buffer-loader': (plugin) => 'Loading audio files',
   'sync': (plugin) => 'Syncing',
@@ -45,23 +48,21 @@ const errorMsg = {
       }
     }
 
-    return html`
+    return _html`
       <li slot="message">An error occured while...</li>
       <li slot="description">${errorMsg} (${erroredFeatures.join(', ')})</li>
     `;
   },
 
   checkin(checkin) {
-    return html`
+    return _html`
       <li slot="message">No place available...</li>
       <li slot="description">Please try again later</li>
     `;
-
-    return $html;
   },
 
   default(plugin) {
-    return html`
+    return _html`
       <li slot="message">An error occured while...</li>
       <li slot="description">Initializing ${plugin.name}</li>
     `;
@@ -97,7 +98,7 @@ const renderScreen = {
     // @touchend="${ifDefined(bindListener)}"
     // @mouseup="${ifDefined(bindListener)}"
 
-    return html`
+    return _html`
       <sw-plugin-platform
         title="${config.app.name}"
         subtitle="${config.app.author}"
@@ -116,7 +117,7 @@ const renderScreen = {
       position.setPosition(x, y);
     };
 
-    return html`
+    return _html`
       <div class="screen">
         <sw-plugin-position
           x-range="${JSON.stringify(xRange)}"
@@ -131,12 +132,12 @@ const renderScreen = {
   },
 
   default(plugins, config, containerInfos) {
-    return html`
+    return _html`
       <sw-plugin-default
         title="${config.app.name}"
         subtitle="${config.app.author}"
       >
-        ${plugins.map(plugin => html`
+        ${plugins.map(plugin => _html`
           <li>
             ${startedMsg[plugin.name]
               ? startedMsg[plugin.name](plugin)
@@ -148,7 +149,7 @@ const renderScreen = {
   },
 
   errored(plugin, config, containerInfos) {
-    return html`
+    return _html`
       <sw-plugin-error
         title="${config.app.name}"
         subtitle="${config.app.author}"
@@ -163,9 +164,17 @@ const renderScreen = {
  * This method only works with default plugin names (cf. `pluginFactory.defaultName`).
  * if other names are used, should be updated accordingly...
  */
-export default function renderInitializationScreens(client, config, $container) {
+export default function renderInitializationScreens(client, config, $container, options = {}) {
   let currentStatus;
-  let listenResize = false;
+  let started = false;
+
+  if (options.screens) {
+    Object.assign(renderScreen, options.screens);
+  }
+
+  // for development purpose w/ npm link
+  _render = options.deps && options.deps.render ? options.deps.render : _render;
+  _html = options.deps && options.deps.html ? options.deps.html : _html;
 
   const onResize = () => {
     renderScreenFromStatus(client, config, $container, currentStatus);
@@ -175,9 +184,15 @@ export default function renderInitializationScreens(client, config, $container) 
     currentStatus = status;
 
     // wait for first status before adding resize listener
-    if (!listenResize) {
+    // ...me later... "thanks but why...?"
+    if (!started) {
       window.addEventListener('resize', onResize);
-      listenResize = true;
+
+      if (options.onStart) {
+        options.onStart();
+      }
+
+      started = true;
     }
 
     renderScreenFromStatus(client, config, $container, status);
@@ -232,7 +247,7 @@ export default function renderInitializationScreens(client, config, $container) 
       }
     }
 
-    render($screen, $container);
+    _render($screen, $container);
   }
   // clean when ready...
   client.pluginManager.ready.then(() => {
