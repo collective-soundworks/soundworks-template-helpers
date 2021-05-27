@@ -22,6 +22,7 @@ class SwAppHeader extends LitElement {
         text-align: center;
         font-family: Consolas, monaco, monospace;
         font-weight: normal;
+        display: var(--title-display, block);
       }
 
       .subtitle {
