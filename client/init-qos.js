@@ -1,7 +1,6 @@
 // minimalistic, non subtle QoS
 // to be improved little by little...
 export default function initQoS(client, {
-  // allow clients to choose which QoS strategy is applied
   socketClosed = true,
   visibilityChange = true,
 } = {}) {
