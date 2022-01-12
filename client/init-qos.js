@@ -2,18 +2,23 @@
 // to be improved little by little...
 export default function initQoS(client, {
   // allow clients to choose which QoS strategy is applied
+  socketClosed = true,
   visibilityChange = true,
 } = {}) {
-  // we don't want to disable this one
-  client.socket.addListener('close', () => {
-    setTimeout(() => window.location.reload(true), 2000);
-  });
+  if (socketClosed) {
+    client.socket.addListener('close', () => {
+      setTimeout(() => window.location.reload(true), 2000);
+    });
+  }
 
-  // this is particularly boring with controllers
   if (visibilityChange) {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        window.location.reload(true);
+        // differ by a few milliseconds, as the event is trigerred before the change
+        // see. https://github.com/collective-soundworks/soundworks/issues/42
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 50);
       }
     }, false);
   }
