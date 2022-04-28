@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map.js';
+import { LitElement, html, css } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 import './sw-app-header.js';
 
 class SwPluginError extends LitElement {
@@ -19,21 +19,12 @@ class SwPluginError extends LitElement {
   static get styles() {
     return css`
       :host {
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-
-      .half-screen {
-        height: 50%;
+        min-height: 100%;
         display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .aligner-item-top {
-        align-self: flex-start;
-        width: 100%;
+        flex-direction: column;
+        justify-content: space-around;
+        align-content: stretch;
+        flex-wrap: wrap;
       }
 
       ul {
@@ -44,12 +35,11 @@ class SwPluginError extends LitElement {
       li, ::slotted(li) {
         font-size: 1.4rem;
         line-height: 2rem;
-        opacity: 0.6;
+        opacity: 0.9;
       }
 
       li:first-child {
         font-style: italic;
-        opacity: 1;
         color: #a94442;
       }
 
@@ -65,18 +55,12 @@ class SwPluginError extends LitElement {
 
   render() {
     return html`
-      <section class="half-screen">
-        <sw-app-header title="${this.title}" subtitle="${this.subtitle}" />
-      </section>
-      <section class="half-screen">
-        <div class="aligner-item-top">
-          <ul>
-            <li>Sorry,</li>
-            <slot name="message"></slot>
-            <slot name="description"></slot>
-          </ul>
-        </div>
-      </section>
+      <sw-app-header title="${this.title}" subtitle="${this.subtitle}"></sw-app-header>
+      <ul>
+        <li>Sorry,</li>
+        <slot name="message"></slot>
+        <slot name="description"></slot>
+      </ul>
     `;
   }
 }

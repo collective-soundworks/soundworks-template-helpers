@@ -1,5 +1,5 @@
-import { html, render } from 'lit-html';
-import { ifDefined } from 'lit-html/directives/if-defined';
+import { html, render } from 'lit/html.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import './components/sw-app-header.js';
 import './components/sw-plugin-position.js';
 import './components/sw-plugin-platform.js';
@@ -94,9 +94,6 @@ const renderScreen = {
     } else if (pluginState.finalized === null) {
       msg = 'Finalizing...'
     }
-
-    // @touchend="${ifDefined(bindListener)}"
-    // @mouseup="${ifDefined(bindListener)}"
 
     return _html`
       <sw-plugin-platform
@@ -206,6 +203,7 @@ export default function renderInitializationScreens(client, config, $container, 
     //   status['platform'] = 'errored';
     // }
 
+
     let $screen;
     // handle platform first
     if (status['platform'] && status['platform'] === 'started') {
@@ -225,7 +223,7 @@ export default function renderInitializationScreens(client, config, $container, 
       $screen = renderScreen.position(positionService, config, { width, height });
 
     } else {
-      // platform is ready, or not platform at all...
+      // platform is ready, or no platform at all...
       const started = [];
       let errored = null; // only one plugin can be errored at once (normally)
 

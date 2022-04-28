@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map.js';
+import { LitElement, html, css } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 
 class SwPluginPlatform extends LitElement {
   static get properties() {
@@ -26,21 +26,19 @@ class SwPluginPlatform extends LitElement {
   static get styles() {
     return css`
       :host {
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-
-      .half-screen {
-        height: 50%;
+        min-height: 100%;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: space-around;
+        align-content: stretch;
+        flex-wrap: wrap;
       }
 
-      .normal {
+      p {
         font-size: 1.4rem;
         line-height: 2rem;
+        text-align: center;
+        /*text-align: left;*/
       }
 
       /* blink softly */
@@ -77,12 +75,8 @@ class SwPluginPlatform extends LitElement {
     };
 
     return html`
-      <section class="half-screen">
-        <sw-app-header title="${this.title}" subtitle="${this.subtitle}" />
-      </section>
-      <section class="half-screen">
-        <p class="${classMap(messageClasses)}">${this.msg}</p>
-      </section>
+      <sw-app-header title="${this.title}" subtitle="${this.subtitle}"></sw-app-header>
+      <p class="${classMap(messageClasses)}">${this.msg}</p>
     `;
   }
 }

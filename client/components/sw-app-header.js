@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 
 class SwAppHeader extends LitElement {
   static get properties() {
@@ -16,9 +16,7 @@ class SwAppHeader extends LitElement {
 
       .title {
         font-size: 3rem;
-        line-height: 3.4rem;
-        margin: 0 0 6px 0;
-        /*margin: 20px 0;*/
+        line-height: 5rem;
         text-align: center;
         font-family: Consolas, monaco, monospace;
         font-weight: normal;

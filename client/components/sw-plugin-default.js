@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map.js';
+import { LitElement, html, css } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 import './sw-app-header.js';
 
 class SwPluginDefault extends LitElement {
@@ -19,26 +19,18 @@ class SwPluginDefault extends LitElement {
   static get styles() {
     return css`
       :host {
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-
-      .half-screen {
-        height: 50%;
+        min-height: 100%;
         display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .aligner-item-top {
-        align-self: flex-start;
-        width: 100%;
+        flex-direction: column;
+        justify-content: space-around;
+        align-content: stretch;
+        flex-wrap: wrap;
       }
 
       ul {
         list-style-type: none;
         padding-right: 20px;
+        margin: 14px 0;
       }
 
       li, ::slotted(li) {
@@ -58,7 +50,6 @@ class SwPluginDefault extends LitElement {
       @-ms-keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; }}
       @-o-keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; }}
       @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; }}
-
 
       li span {
         animation-name: blink;
@@ -86,20 +77,14 @@ class SwPluginDefault extends LitElement {
 
   render() {
     return html`
-      <section class="half-screen">
-        <sw-app-header title="${this.title}" subtitle="${this.subtitle}" />
-      </section>
-      <section class="half-screen">
-        <div class="aligner-item-top">
-          <ul>
-            <li>
-              Please wait while
-              <span>.</span><span>.</span><span>.</span>
-            </li>
-            <slot></slot>
-          </ul>
-        </div>
-      </section>
+      <sw-app-header title="${this.title}" subtitle="${this.subtitle}"></sw-app-header>
+      <ul>
+        <li>
+          Please wait while
+          <span>.</span><span>.</span><span>.</span>
+        </li>
+        <slot></slot>
+      </ul>
     `;
   }
 }

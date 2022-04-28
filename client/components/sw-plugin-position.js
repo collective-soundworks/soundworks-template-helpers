@@ -1,5 +1,5 @@
-import { LitElement, html, svg, css } from 'lit-element';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { LitElement, html, svg, css } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import '@ircam/simple-components/sc-dot-map.js';
 import '@ircam/simple-components/sc-button.js';
 
