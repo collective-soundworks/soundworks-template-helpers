@@ -26,7 +26,7 @@ class SwPluginPlatform extends LitElement {
   static get styles() {
     return css`
       :host {
-        min-height: 100%;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
