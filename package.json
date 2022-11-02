@@ -16,5 +16,10 @@
   "dependencies": {
     "@ircam/simple-components": "^2.0.1",
     "lit": "^2.2.2"
+  },
+  "devDependencies": {
+    "mkdirp": "^1.0.4",
+    "puppeteer": "^19.1.2",
+    "rimraf": "^3.0.2"
   }
 }
