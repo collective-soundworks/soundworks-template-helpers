@@ -1,11 +1,7 @@
 .DS_Store
 Thumbs.db
 
-.babelrc
+.eslintrc
 .editorconfig
-
-vendors
-docs
-.bak
 
 tests

@@ -8,8 +8,8 @@ import './sw-plugin-error.js';
 class SwPluginPlatform extends LitElement {
   static get properties() {
     return {
-      plugin: { hasChanged: () => true, attribute: false, },
-      client: { hasChanged: () => true, attribute: false, },
+      plugin: { hasChanged: () => true, attribute: false },
+      client: { hasChanged: () => true, attribute: false },
       localizedTexts: { type: Object, attribute: 'localized-texts' },
     };
   }

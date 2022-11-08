@@ -152,4 +152,4 @@ async function bootstrap($container) {
   }
 }
 
-launcher.execute(bootstrap);
+launcher.execute(bootstrap, { width: '50%' });

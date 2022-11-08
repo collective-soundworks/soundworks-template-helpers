@@ -1,7 +1,7 @@
 {
-  "name": "@soundworks/template-helpers",
+  "name": "@soundworks/helpers",
   "version": "2.0.1",
-  "description": "set of generic helpers for the soundworks-template",
+  "description": "Set of generic helpers for soundworks applications",
   "authors": [
     "Benjamin Matuszewski"
   ],
@@ -9,13 +9,33 @@
   "publishConfig": {
     "access": "public"
   },
+  "type": "module",
+  "exports": {
+    "./launcher.js": "./src/launcher.js",
+    "./polyfills.js": "./src/polyfills.js"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/collective-soundworks/soundworks-template-helpers"
+    "url": "git+https://github.com/collective-soundworks/soundworks-helpers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/collective-soundworks/soundworks-helpers/issues"
+  },
+  "homepage": "https://github.com/collective-soundworks/soundworks-helpers#readme",
+  "keywords": [
+    "soundworks"
+  ],
+  "scripts": {
+    "lint": "npx eslint src && npx eslint tests",
+    "test": "node tests/init-pages-screenshots.js"
   },
   "dependencies": {
+    "@ircam/eslint-config": "^1.1.0",
     "@ircam/simple-components": "^2.0.1",
-    "lit": "^2.2.2"
+    "@webcomponents/webcomponentsjs": "^2.4.3",
+    "core-js": "^3.22.3",
+    "lit": "^2.2.2",
+    "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {
     "mkdirp": "^1.0.4",

@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit';
-import { classMap } from 'lit/directives/class-map.js';
 
 import './sw-header.js';
 import './sw-plugin-error.js';
@@ -7,10 +6,10 @@ import './sw-plugin-error.js';
 class SwPluginDefault extends LitElement {
   static get properties() {
     return {
-      plugin: { hasChanged: () => true, attribute: false, },
-      client: { hasChanged: () => true, attribute: false, },
+      plugin: { hasChanged: () => true, attribute: false },
+      client: { hasChanged: () => true, attribute: false },
       localizedTexts: { type: Object, attribute: 'localized-texts' },
-    }
+    };
   }
 
   static get styles() {

@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit';
-import { classMap } from 'lit/directives/class-map.js';
 
 import './sw-header.js';
 

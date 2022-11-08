@@ -10,6 +10,17 @@ let page;
 
 const appPath = path.join(process.cwd(), 'tests', 'init-pages');
 
+console.log(`
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+>
+> This test takes screenshots of a quite complete set of the possible laucnher screens.
+> Screenshots will be stored in the "tests/init-pages-screenshots" directory.
+>
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+`);
+
 console.log('+ rebuild app');
 require('child_process').execSync('npm run build', {
   cwd: appPath,

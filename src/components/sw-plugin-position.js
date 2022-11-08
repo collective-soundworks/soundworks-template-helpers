@@ -1,30 +1,15 @@
-import { LitElement, html, svg, css } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
+import { LitElement, html, css, nothing } from 'lit';
+
 import '@ircam/simple-components/sc-dot-map.js';
 import '@ircam/simple-components/sc-button.js';
 
 class SwSPluginPosition extends LitElement {
   static get properties() {
     return {
-      xRange: {
-        type: Array,
-        attribute: 'x-range',
-      },
-      yRange: {
-        type: Array,
-        attribute: 'y-range',
-      },
-      width: {
-        type: Number
-      },
-      height: {
-        type: Number
-      },
-      backgroundImage: {
-        type: String,
-        attribute: 'background-image',
-      },
-    }
+      plugin: { hasChanged: () => true, attribute: false },
+      client: { hasChanged: () => true, attribute: false },
+      localizedTexts: { type: Object, attribute: 'localized-texts' },
+    };
   }
 
   static get styles() {
@@ -54,6 +39,7 @@ class SwSPluginPosition extends LitElement {
         text-align: center;
         height: 36px;
         line-height: 36px;
+        margin: 0;
       }
     `;
   }
@@ -63,14 +49,20 @@ class SwSPluginPosition extends LitElement {
 
     this.x = null;
     this.y = null;
-    this.backgroundImage = '';
   }
 
   render() {
-    const orientation = this.width > this.height ? 'landscape' : 'portrait';
-    const containerSize = orientation === 'portrait' ? this.width : this.height;
+    const width = parseInt(this.parentNode.host.getAttribute('width'));
+    const height = parseInt(this.parentNode.host.getAttribute('height'));
 
-    // could be refined but does the job for now...
+    if (Number.isNaN(width) || Number.isNaN(height) || this.plugin.state.infos === null) {
+      return nothing;
+    }
+
+    const { xRange, yRange, backgroundImage } = this.plugin.state.infos;
+    const orientation = width > height ? 'landscape' : 'portrait';
+
+    // could probably be refined but does the job for now...
     let mapContainerWidth;
     let mapContainerHeight;
     let commandContainerWidth;
@@ -80,16 +72,16 @@ class SwSPluginPosition extends LitElement {
 
     if (orientation === 'landscape') {
       commandContainerWidth = 300;
-      commandContainerHeight = this.height;
-      mapContainerWidth = this.width - commandContainerWidth;
-      mapContainerHeight = this.height;
+      commandContainerHeight = height;
+      mapContainerWidth = width - commandContainerWidth;
+      mapContainerHeight = height;
       commandContainerTop = 0;
       commandContainerLeft = mapContainerWidth;
     } else {
-      commandContainerWidth = this.width;
+      commandContainerWidth = width;
       commandContainerHeight = 200;
-      mapContainerWidth = this.width;
-      mapContainerHeight = this.height - commandContainerHeight;
+      mapContainerWidth = width;
+      mapContainerHeight = height - commandContainerHeight;
       commandContainerTop = mapContainerHeight;
       commandContainerLeft = 0;
     }
@@ -98,9 +90,9 @@ class SwSPluginPosition extends LitElement {
       <sc-dot-map
         width="${mapContainerWidth}"
         height="${mapContainerHeight}"
-        x-range="${JSON.stringify(this.xRange)}"
-        y-range="${JSON.stringify(this.yRange)}"
-        background-image="${this.backgroundImage}"
+        x-range="${JSON.stringify(xRange)}"
+        y-range="${JSON.stringify(yRange)}"
+        background-image="${backgroundImage}"
         radius="12"
         capture-events
         persist-events
@@ -121,16 +113,15 @@ class SwSPluginPosition extends LitElement {
           ${(this.x !== null && this.y !== null)
             ? html`
               <sc-button
-                @input="${this.propagateChange}"
-                value="Send"
+                @input="${this.setPluginPosition}"
+                value="${this.localizedTexts.sendButton}"
                 height="36"
                 width="${commandContainerWidth - 40}"
               ></sc-button>`
             : html`
               <p class="info">
-                Please, select your position
-              </p>
-            `
+                ${this.localizedTexts.selectPosition}
+              </p>`
           }
         </div>
       </section>
@@ -153,12 +144,8 @@ class SwSPluginPosition extends LitElement {
     }
   }
 
-  propagateChange(eventName) {
-    const event = new CustomEvent('change', {
-      detail: { x: this.x, y: this.y }
-    });
-
-    this.dispatchEvent(event);
+  setPluginPosition(eventName) {
+    this.plugin.setPosition(this.x, this.y);
   }
 }
 

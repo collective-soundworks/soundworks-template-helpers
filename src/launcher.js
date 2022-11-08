@@ -19,7 +19,12 @@ export default {
    * adding `?emulate=numberOfClient` at the end of the url
    * e.g. `http://127.0.0.1:8000?emulate=10` to run 10 clients in parallel
    */
-  async execute(bootstrap) {
+  async execute(bootstrap, {
+    width = '20%',
+    height = '500px'
+  } = {}) {
+    console.log(width, height);
+
     const $container = document.body;
     $container.classList.remove('loading');
 
@@ -40,9 +45,9 @@ export default {
       style.innerText = `
         .emulated-client-container {
           float: left;
-          width: 20%;
+          width: ${width};
           min-width: 300px;
-          height: 500px;
+          height: ${height};
           outline: 1px solid #aaaaaa;
           position: relative;
           overflow: auto;
