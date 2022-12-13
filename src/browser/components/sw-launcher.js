@@ -71,4 +71,6 @@ class SwLauncher extends LitElement {
   }
 }
 
+SwLauncher.disableWarning?.('change-in-update');
+
 customElements.define('sw-launcher', SwLauncher);

@@ -17,7 +17,7 @@ export default {
     sendButton: 'Envoyer',
   },
   // default plugin view
-  // if inited or errored are defined they will be used as message,
+  // if `inited` or `errored` are defined they will be used as message,
   // else use common.defaultInited and/or common.defaultErrored
   PluginSync: {
     inited: 'Synchonisation',

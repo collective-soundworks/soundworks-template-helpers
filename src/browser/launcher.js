@@ -10,7 +10,7 @@ import './components/sw-plugin-position.js';
 import './components/sw-plugin-default.js';
 
 export default {
-  _clients: new Set(),
+  _clients: new Set(), // <client, options>
   _language: null, // default to english
   _languageData: { en, fr },
 
@@ -20,21 +20,15 @@ export default {
    * e.g. `http://127.0.0.1:8000?emulate=10` to run 10 clients in parallel
    */
   async execute(bootstrap, {
+    numClients = 1,
     width = '20%',
-    height = '500px'
+    height = '500px',
   } = {}) {
-    console.log(width, height);
-
     const $container = document.body;
     $container.classList.remove('loading');
 
-    const searchParams = new URLSearchParams(window.location.search);
-    // enable instanciation of multiple clients in the same page to facilitate
-    // development and testing (be careful in production...)
-    const numEmulatedClients = parseInt(searchParams.get('emulate')) || 1;
-
     // special logic for emulated clients (1 click to rule them all)
-    if (numEmulatedClients > 1) {
+    if (numClients > 1) {
       // @note - we use raw lit-html and style injection to avoid problems
       // with shadow DOM, scoped styles and so on... As this is a development
       // tool only, we don't really care of hardcoding things here
@@ -87,7 +81,7 @@ export default {
             click to start
           </p>
         </div>
-        ${Array(numEmulatedClients).fill(null).map(() => {
+        ${Array(numClients).fill(null).map(() => {
           return html`
             <div class="emulated-client-container"></div>
           `;
@@ -126,7 +120,7 @@ export default {
 
           $startButton.removeEventListener('click', initPlatforms);
           $startButton.remove();
-          // numEmulatedClients
+          // numClients
         }
 
         $startButton.addEventListener('click', initPlatforms);
@@ -136,11 +130,54 @@ export default {
     }
   },
 
-  render(client, $container) {
-    // Record the client into the launcher, so that we can click / initialize
+  register(client, {
+    initScreensContainer = null,
+    reloadOnVisibilityChange = true,
+    reloadOnSocketError = true,
+  } = {}) {
+    // record the clients into the launcher, so that we can click / initialize
     // them all at once if needed, i.e. if the platform plugin is registered
     this._clients.add(client);
 
+    if (!(initScreensContainer instanceof HTMLElement)) {
+      throw new Error(`[@soundowrks/helpers] the "initScreenContainer" option of "launcher.register(client, options) should be an instance of DOMElement`);
+    }
+
+    // render init views
+    this._render(client, initScreensContainer);
+    // basic "QoS" strategies
+    this._initQoS(client, reloadOnVisibilityChange, reloadOnSocketError);
+  },
+
+  _initQoS(client, reloadOnVisibilityChange, reloadOnSocketError) {
+    if (reloadOnVisibilityChange) {
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          // differ by a few milliseconds, as the event is trigerred before the change
+          // see. https://github.com/collective-soundworks/soundworks/issues/42
+          setTimeout(() => window.location.reload(true), 50);
+        }
+      }, false);
+    }
+
+    // the "real" sockets are created at the begining of the `client.init` step
+    // but the event listener system is ready to be used
+    //
+    // @note: most of the time this should be set to `true` but it may be handy
+    // to disable this behavior for debugging / development purposes
+    if (reloadOnSocketError) {
+      // give some time for the server to relaunch in dev mode
+      client.socket.addListener('close', () => {
+        setTimeout(() => window.location.reload(true), 500);
+      });
+
+      client.socket.addListener('error', () => {
+        setTimeout(() => window.location.reload(true), 500);
+      });
+    }
+  },
+
+  _render(client, $container) {
     let lang;
 
     // if language has not been set manually, pick language from the brwoser
