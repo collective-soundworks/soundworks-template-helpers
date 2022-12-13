@@ -1,4 +1,3 @@
-// import { Worker, isMainThread, workerData } from 'node:worker_threads';
 import { fork } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -82,21 +81,3 @@ export default {
     process.addListener('unhandledRejection', err => exitHandler(err));
   },
 };
-
-// // -------------------------------------------------------------------
-// // helpers & bootstrapping
-// // -------------------------------------------------------------------
-// function exitHandler(msg) {
-//   console.log(msg);
-
-//   if (NUM_CLIENTS === 1) {
-//     // https://www.gnu.org/software/libc/manual/html_node/Termination-Signals.html
-//     console.log('------------------------- TERM');
-//     process.kill(process.pid, 'SIGKILL');
-//   }
-// }
-
-// function initQoS(client) {
-
-// }
-
