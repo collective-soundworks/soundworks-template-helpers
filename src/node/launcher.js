@@ -4,32 +4,32 @@ import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 
 let _bootstrap = null;
-let _children = new Map();
+
+function forkRestartableProcess(modulePath) {
+  const child = fork(modulePath, ['child'], {});
+  child.on('exit', () => forkRestartableProcess(modulePath));
+}
 
 export default {
   async execute(bootstrap, {
     numClients = 1,
-    sourceURL = null,
+    moduleURL = null,
   } = {}) {
     _bootstrap = bootstrap;
 
-    if (Number.isInteger(numClients)) {
-      if (numClients > 1 && sourceURL === null) {
-        throw new Error('Cannot emulate several clients, `source` option must be defined');
-      }
+    if (!Number.isInteger(numClients)) {
+      throw new Error('[launcher] `numClients` options is mandatory and should be an integer');
+    }
 
-      if (numClients > 1) {
-        // @todo - use fork instead of threads, we don't want to share anything here
-        if (process.argv[2] === 'child') {
-          bootstrap();
-        } else {
-          for (let i = 0; i < numClients; i++) {
-            const child = fork(fileURLToPath(sourceURL), ['child'], {});
-            _children.set(child.pid, { child });
-          }
-        }
-      } else {
-        bootstrap();
+    if (moduleURL === null) {
+      throw new Error('[launcher] `moduleURL` option is mandatory');
+    }
+
+    if (process.argv[2] === 'child') {
+      bootstrap();
+    } else {
+      for (let i = 0; i < numClients; i++) {
+        forkRestartableProcess(fileURLToPath(moduleURL));
       }
     }
   },
@@ -37,13 +37,13 @@ export default {
   async register(client, {
     restartOnError = true,
   } = {}) {
-    const { useHttps, serverIp, port } = client.config.env;
-    const url = `${useHttps ? 'https' : 'http'}://${serverIp}:${port}`;
-    // @todo - change serverIp to address
-    console.log(chalk.cyan(`[client ${client.type}] connecting to ${url}`));
+    const { useHttps, serverAddress, port } = client.config.env;
+    const url = `${useHttps ? 'https' : 'http'}://${serverAddress}:${port}`;
+
+    console.log(chalk.cyan(`[launcher][client ${client.role}] connecting to ${url}`));
 
     async function exitHandler(err) {
-      console.log(chalk.cyan(`[client ${client.type} ${client.id}] closing due to error...`));
+      console.log(chalk.cyan(`[launcher][client ${client.role} ${client.id}] closing due to error...`));
 
       if (err && err.message) {
         console.error(chalk.red(`> ${err.type} ${err.message}`));
@@ -63,11 +63,11 @@ export default {
         await client.stop();
 
         if (restartOnError) {
-          console.log(chalk.cyan(`[client ${client.type}] restarting...`));
-          _bootstrap();
+          console.log(chalk.cyan(`[launcher][client ${client.role} ${client.id}] exiting process...`));
+          process.exit();
         }
       } catch(err) {
-        console.error(chalk.red('> err in exitHandler'));
+        console.error(chalk.red('> error in exitHandler'));
         console.error(err);
         process.exit(1);
         // do nothing client is already stopping...
