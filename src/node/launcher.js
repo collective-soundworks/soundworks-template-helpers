@@ -42,6 +42,10 @@ export default {
 
     console.log(chalk.cyan(`[launcher][client ${client.role}] connecting to ${url}`));
 
+    client.socket.addListener('open', () => {
+      console.log(chalk.cyan(`[launcher][client ${client.role}] connected`));
+    });
+
     async function exitHandler(err) {
       console.log(chalk.cyan(`[launcher][client ${client.role} ${client.id}] closing due to error...`));
 
