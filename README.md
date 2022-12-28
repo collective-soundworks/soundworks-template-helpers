@@ -58,8 +58,9 @@ import launcher from '@soundworks/helpers/launcher.js'
 
 #### browserLauncher.language : <code>string</code>
 Language to be used in the initialization screens. By default, pick language
-from the brwoser and fallback to english if not supported. For now, available
-languages are 'fr' and 'en'.
+from the browser and fallback to english if not supported.
+
+For now, available languages are 'fr' and 'en'.
 
 **Kind**: static property of [<code>browserLauncher</code>](#browserLauncher)  
 <a name="browserLauncher.execute"></a>
