@@ -178,4 +178,4 @@ uncaught error occurs in the program.
 
 ## License
 
-BSD-3-Clause
+[BSD-3-Clause](./LICENSE)
