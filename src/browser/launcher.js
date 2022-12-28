@@ -9,15 +9,27 @@ import './components/sw-plugin-platform.js';
 import './components/sw-plugin-position.js';
 import './components/sw-plugin-default.js';
 
-export default {
+/**
+ * Launcher for clients running in browser runtime.
+ */
+const browserLauncher = {
+  /** @private */
   _clients: new Set(), // <client, options>
+  /** @private */
   _language: null, // default to english
+  /** @private */
   _languageData: { en, fr },
 
   /**
    * Allow to launch multiple clients at once in the same brwoser window by
    * adding `?emulate=numberOfClient` at the end of the url
    * e.g. `http://127.0.0.1:8000?emulate=10` to run 10 clients in parallel
+   *
+   * @param {Function} bootstrap - Bootstrap function to execute.
+   * @param {object} options - Configuration object.
+   * @param {object} [options.numClients=1] - Number of parallel clients.
+   * @param {object} [options.width='20%'] - If numClient > 1, width of the container.
+   * @param {object} [options.height='599px'] - If numClient > 1, height of the container.
    */
   async execute(bootstrap, {
     numClients = 1,
@@ -130,6 +142,34 @@ export default {
     }
   },
 
+  /**
+   * Register the client in the launcher.
+   *
+   * The launcher will do a bunch of stuff for you:
+   * - Display default initialization screens. If you want to change the provided
+   * initialization screens, you can import all the helpers directly in your
+   * application by doing `npx soundworks --eject-helpers`. You can also
+   * customise some global syles variables (background-color, text color etc.)
+   * in `src/clients/components/css/app.scss`.
+   * You can also change the default language of the intialization screen by
+   * setting, the `launcher.language` property, e.g.:
+   * `launcher.language = 'fr'`
+   * - By default the launcher automatically reloads the client when the socket
+   * closes or when the page is hidden. Such behavior can be quite important in
+   * performance situation where you don't want some phone getting stuck making
+   * noise without having any way left to stop it... Also be aware that a page
+   * in a background tab will have all its timers (setTimeout, etc.) put in very
+   * low priority, messing any scheduled events.
+   *
+   * @param {Function} client - The soundworks client.
+   * @param {object} options - Configuration object.
+   * @param {object} [options.initScreensContainer=1] - The HTML container for
+   *  the initialization screens.
+   * @param {object} [options.reloadOnVisibilityChange=true] - Define if the client
+   *  should reload on visibility change.
+   * @param {object} [options.reloadOnSocketError=true] - Define if the client
+   *  should reload on socket error and disconnection.
+   */
   register(client, {
     initScreensContainer = null,
     reloadOnVisibilityChange = true,
@@ -161,7 +201,7 @@ export default {
     }
 
     // the "real" sockets are created at the begining of the `client.init` step
-    // but the event listener system is ready to be used
+    // but the event listener system is already ready to use
     //
     // @note: most of the time this should be set to `true` but it may be handy
     // to disable this behavior for debugging / development purposes
@@ -300,6 +340,13 @@ export default {
     });
   },
 
+  /**
+   * Language to be used in the initialization screens. By default, pick language
+   * from the brwoser and fallback to english if not supported. For now, available
+   * languages are 'fr' and 'en'.
+   *
+   * @type {string}
+   */
   get language() {
     return this._language;
   },
@@ -312,10 +359,22 @@ export default {
     this._language = lang;
   },
 
+  /**
+   * Set the text to be used for a given language. Allows to override an existing
+   * language as well as define a new one.
+   *
+   * @param {string} lang - Key correspondig to the language (e.g. 'fr', 'en', 'es')
+   * @param {object} data - Key/value pairs defining the text strings to be used.
+   */
   setLanguageData(lang, data) {
     this._languageData[lang] = data;
   },
 
+  /**
+   * Retrieve the data for a given language.
+   *
+   * @param {string} lang - Key correspondig to the language (e.g. 'fr', 'en', 'es')
+   */
   getLanguageData(lang = null) {
     if (lang !== null) {
       if (!(lang in this._languageData)) {
@@ -328,3 +387,5 @@ export default {
     }
   },
 };
+
+export default browserLauncher;

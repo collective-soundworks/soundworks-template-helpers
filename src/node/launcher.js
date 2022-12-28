@@ -10,7 +10,20 @@ function forkRestartableProcess(modulePath) {
   child.on('exit', () => forkRestartableProcess(modulePath));
 }
 
-export default {
+/**
+ * Launcher for clients running in Node.js runtime.
+ */
+const nodeLauncher = {
+  /**
+   * The "execute" function allows to fork multiple clients in the same terminal window
+   * by defining the `EMULATE` env process variable
+   * e.g. `EMULATE=10 npm run watch-process thing` to run 10 clients side-by-side
+   *
+   * @param {Function} bootstrap - Bootstrap function to execute.
+   * @param {object} options - Configuration object.
+   * @param {object} options.moduleURL - Module url of the calling filr.
+   * @param {object} [options.numClients=1] - Number of parallel clients.
+   */
   async execute(bootstrap, {
     numClients = 1,
     moduleURL = null,
@@ -34,6 +47,17 @@ export default {
     }
   },
 
+  /**
+   * Register the soundworks client into the launcher
+   *
+   * Automatically restarts the process when the socket closes or when an
+   * uncaught error occurs in the program.
+   *
+   * @param {Function} client - The soundworks client.
+   * @param {object} options - Configuration object.
+   * @param {object} [options.restartOnError=true] - Define if the client should
+   *  restart when on uncaught and socket errors.
+   */
   async register(client, {
     restartOnError = true,
   } = {}) {
@@ -42,12 +66,14 @@ export default {
 
     console.log(chalk.cyan(`[launcher][client ${client.role}] connecting to ${url}`));
 
-    client.socket.addListener('open', () => {
-      console.log(chalk.cyan(`[launcher][client ${client.role}] connected`));
+    client.onStatusChange(status => {
+      if (status === 'inited') {
+        console.log(chalk.cyan(`[launcher][client ${client.role}(${client.id})] connected`));
+      }
     });
 
     async function exitHandler(err) {
-      console.log(chalk.cyan(`[launcher][client ${client.role} ${client.id}] closing due to error...`));
+      console.log(chalk.cyan(`[launcher][client ${client.role}(${client.id})] closing due to error...`));
 
       if (err && err.message) {
         console.error(chalk.red(`> ${err.type} ${err.message}`));
@@ -55,20 +81,16 @@ export default {
         console.error(chalk.red(`> ${err}`));
       }
 
-      // stop will trigger the socket close message so we don't want to trigger
-      // restart twice
       try {
+        // make sure we can receive another error while stopping the client
         process.removeAllListeners('uncaughtException');
         process.removeAllListeners('unhandledRejection');
-
-        client.socket.removeAllListeners('close');
-        client.socket.removeAllListeners('error');
 
         await client.stop();
 
         if (restartOnError) {
           console.log(chalk.cyan(`[launcher][client ${client.role} ${client.id}] exiting process...`));
-          process.exit();
+          process.exit(0);
         }
       } catch(err) {
         console.error(chalk.red('> error in exitHandler'));
@@ -85,3 +107,5 @@ export default {
     process.addListener('unhandledRejection', err => exitHandler(err));
   },
 };
+
+export default nodeLauncher;

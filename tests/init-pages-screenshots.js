@@ -1,9 +1,9 @@
-const path = require('node:path');
-const { fork } = require('node:child_process');
+import path from 'node:path';
+import { fork, execSync } from 'node:child_process';
 
-const rimraf = require('rimraf');
-const mkdirp = require('mkdirp');
-const puppeteer = require('puppeteer');
+import rimraf from 'rimraf';
+import mkdirp from 'mkdirp';
+import puppeteer from 'puppeteer';
 
 let browser;
 let page;
@@ -22,7 +22,8 @@ console.log(`
 `);
 
 console.log('+ rebuild app');
-require('child_process').execSync('npm run build', {
+
+execSync('npm run build', {
   cwd: appPath,
   stdio: 'inherit',
 });

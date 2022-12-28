@@ -12,8 +12,9 @@
   "type": "module",
   "exports": {
     "./launcher.js": {
+      "module": "./src/browser/launcher.js",
       "node": "./src/node/launcher.js",
-      "default": "./src/browser/launcher.js"
+      "types": "./types/launcher.js"
     },
     "./polyfills.js": {
       "node": "./src/node/polyfills.js",
@@ -32,8 +33,11 @@
     "soundworks"
   ],
   "scripts": {
+    "api": "jsdoc-to-readme --src src/browser/launcher.js src/node/launcher.js",
     "lint": "npx eslint src && npx eslint tests",
-    "test": "node tests/init-pages-screenshots.js"
+    "prepublishOnly": "npm run api && npm run toc",
+    "test": "node tests/init-pages-screenshots.js",
+    "toc": "markdown-toc -i README.md  --maxdepth 3"
   },
   "dependencies": {
     "@ircam/eslint-config": "^1.1.0",
@@ -42,12 +46,15 @@
     "chalk": "^5.2.0",
     "core-js": "^3.22.3",
     "lit": "^2.2.2",
+    "markdown-toc": "^1.2.0",
     "regenerator-runtime": "^0.13.7",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
+    "jsdoc-to-readme": "^1.1.0",
     "mkdirp": "^1.0.4",
     "puppeteer": "^19.1.2",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.9.4"
   }
 }

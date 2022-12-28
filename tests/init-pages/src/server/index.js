@@ -1,8 +1,8 @@
 import 'source-map-support/register';
 
 import { Server } from '@soundworks/core/server';
-import pluginPlatform from '@soundworks/plugin-platform/server';
-import pluginPosition from '@soundworks/plugin-position/server';
+import pluginPlatform from '@soundworks/plugin-platform/server.js';
+import pluginPosition from '@soundworks/plugin-position/server.js';
 // use `ENV=myconfigfile npm run dev` to run with a specific env config file
 import config from '../utils/load-config.js';
 
@@ -72,17 +72,11 @@ server.stateManager.registerSchema('router', {
   },
 });
 
-(async function launch() {
-  try {
-    await server.init();
-
-    await server.start();
-
-    // pupetter
-  } catch (err) {
-    console.error(err.stack);
-  }
-})();
+try {
+  await server.start();
+} catch (err) {
+  console.error(err.stack);
+}
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('> Unhandled Promise Rejection');

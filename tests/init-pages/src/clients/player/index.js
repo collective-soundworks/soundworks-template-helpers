@@ -9,8 +9,8 @@ import { Client } from '@soundworks/core/client.js';
 // @todo - rename to @soundworks/helpers
 // import { launcher, reload } from '@soundworks/helpers/index.js';
 import launcher from '@soundworks/template-helpers/launcher.js';
-import pluginPlatform from '@soundworks/plugin-platform/client';
-import pluginPosition from '@soundworks/plugin-position/client';
+import pluginPlatform from '@soundworks/plugin-platform/client.js';
+import pluginPosition from '@soundworks/plugin-position/client.js';
 
 // Grab the configuration object written by the server in the `index.html`
 const config = window.soundworksConfig;
