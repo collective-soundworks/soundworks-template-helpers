@@ -1,7 +1,7 @@
 /**
  * Declaration for browser clients
  */
-declare namespace _default {
+declare namespace launcher {
     /**
      * Allow to launch multiple clients at once in the same brwoser window by
      * adding `?emulate=numberOfClient` at the end of the url
@@ -15,8 +15,8 @@ declare namespace _default {
      */
     function execute(bootstrap: Function, { numClients, width, height, }?: {
       numClients?: number
-      width: string
-      height: string
+      width?: string
+      height?: string
     }): Promise<void>;
     /**
      * Register the client in the launcher.
@@ -53,8 +53,9 @@ declare namespace _default {
     }): void;
     /**
      * Language to be used in the initialization screens. By default, pick language
-     * from the brwoser and fallback to english if not supported. For now, available
-     * languages are 'fr' and 'en'.
+     * from the browser and fallback to english if not supported.
+     *
+     * For now, available languages are 'fr' and 'en'.
      *
      * @type {string}
      */
@@ -74,12 +75,12 @@ declare namespace _default {
      */
     function getLanguageData(lang?: any): any;
 }
-export default _default;
+export default launcher;
 
 /**
  * Declaration for node clients
  */
-declare namespace _default {
+declare namespace launcher {
     /**
      * The "execute" function allows to fork multiple clients in the same terminal window
      * by defining the `EMULATE` env process variable
@@ -109,6 +110,6 @@ declare namespace _default {
         restartOnError?: boolean;
     }): Promise<void>;
 }
-export default _default;
+export default launcher;
 
 

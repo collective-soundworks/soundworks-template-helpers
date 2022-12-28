@@ -351,8 +351,9 @@ const browserLauncher = {
 
   /**
    * Language to be used in the initialization screens. By default, pick language
-   * from the brwoser and fallback to english if not supported. For now, available
-   * languages are 'fr' and 'en'.
+   * from the browser and fallback to english if not supported.
+   *
+   * For now, available languages are 'fr' and 'en'.
    *
    * @type {string}
    */
