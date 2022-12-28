@@ -42,6 +42,10 @@ npm install --save @soundworks/template-helpers
 Launcher for clients running in browser runtime.
 
 **Kind**: global constant  
+**Example**  
+```js
+import launcher from '@soundworks/helpers/launcher.js'
+```
 
 * [browserLauncher](#browserLauncher)
     * [.language](#browserLauncher.language) : <code>string</code>
@@ -75,6 +79,12 @@ e.g. `http://127.0.0.1:8000?emulate=10` to run 10 clients in parallel
 | [options.width] | <code>object</code> | <code>&#x27;20%&#x27;</code> | If numClient > 1, width of the container. |
 | [options.height] | <code>object</code> | <code>&#x27;599px&#x27;</code> | If numClient > 1, height of the container. |
 
+**Example**  
+```js
+launcher.execute(main, {
+  numClients: parseInt(new URLSearchParams(window.location.search).get('emulate')) || 1,
+});
+```
 <a name="browserLauncher.register"></a>
 
 #### browserLauncher.register(client, options)
@@ -106,6 +116,10 @@ low priority, messing any scheduled events.
 | [options.reloadOnVisibilityChange] | <code>object</code> | <code>true</code> | Define if the client  should reload on visibility change. |
 | [options.reloadOnSocketError] | <code>object</code> | <code>true</code> | Define if the client  should reload on socket error and disconnection. |
 
+**Example**  
+```js
+launcher.register(client, { initScreensContainer: $container });
+```
 <a name="browserLauncher.setLanguageData"></a>
 
 #### browserLauncher.setLanguageData(lang, data)
@@ -136,6 +150,10 @@ Retrieve the data for a given language.
 Launcher for clients running in Node.js runtime.
 
 **Kind**: global constant  
+**Example**  
+```js
+import launcher from '@soundworks/helpers/launcher.js'
+```
 
 * [nodeLauncher](#nodeLauncher)
     * [.execute(bootstrap, options)](#nodeLauncher.execute)
@@ -157,6 +175,13 @@ e.g. `EMULATE=10 npm run watch-process thing` to run 10 clients side-by-side
 | options.moduleURL | <code>object</code> |  | Module url of the calling filr. |
 | [options.numClients] | <code>object</code> | <code>1</code> | Number of parallel clients. |
 
+**Example**  
+```js
+launcher.execute(bootstrap, {
+  numClients: process.env.EMULATE ? parseInt(process.env.EMULATE) : 1,
+  moduleURL: import.meta.url,
+});
+```
 <a name="nodeLauncher.register"></a>
 
 #### nodeLauncher.register(client, options)
@@ -173,6 +198,10 @@ uncaught error occurs in the program.
 | options | <code>object</code> |  | Configuration object. |
 | [options.restartOnError] | <code>object</code> | <code>true</code> | Define if the client should  restart when on uncaught and socket errors. |
 
+**Example**  
+```js
+launcher.register(client);
+```
 
 <!-- apistop -->
 

@@ -12,6 +12,9 @@ function forkRestartableProcess(modulePath) {
 
 /**
  * Launcher for clients running in Node.js runtime.
+ *
+ * @example
+ * import launcher from '@soundworks/helpers/launcher.js'
  */
 const nodeLauncher = {
   /**
@@ -23,6 +26,11 @@ const nodeLauncher = {
    * @param {object} options - Configuration object.
    * @param {object} options.moduleURL - Module url of the calling filr.
    * @param {object} [options.numClients=1] - Number of parallel clients.
+   * @example
+   * launcher.execute(bootstrap, {
+   *   numClients: process.env.EMULATE ? parseInt(process.env.EMULATE) : 1,
+   *   moduleURL: import.meta.url,
+   * });
    */
   async execute(bootstrap, {
     numClients = 1,
@@ -57,6 +65,8 @@ const nodeLauncher = {
    * @param {object} options - Configuration object.
    * @param {object} [options.restartOnError=true] - Define if the client should
    *  restart when on uncaught and socket errors.
+   * @example
+   * launcher.register(client);
    */
   async register(client, {
     restartOnError = true,
