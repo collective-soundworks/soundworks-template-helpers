@@ -2,6 +2,8 @@
 
 Set of common helpers for [`soundworks`](https://soundworks.dev) applications.
 
+_WARNING_: The `@soundworks/helpers` target `soundworks#v4` which is still under heavy development.
+
 <!-- toc -->
 
 - [Manual Installation](#manual-installation)
