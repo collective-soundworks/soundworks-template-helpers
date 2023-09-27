@@ -1,7 +1,7 @@
 import { LitElement, html, svg, css } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import '@ircam/simple-components/sc-dot-map.js';
-import '@ircam/simple-components/sc-button.js';
+import '@ircam/sc-components/sc-dots.js';
+import '@ircam/sc-components/sc-button.js';
 
 class SwSPluginPosition extends LitElement {
   static get properties() {
@@ -95,9 +95,8 @@ class SwSPluginPosition extends LitElement {
     }
 
     return html`
-      <sc-dot-map
-        width="${mapContainerWidth}"
-        height="${mapContainerHeight}"
+      <sc-dots
+        style="width: ${mapContainerWidth}px; height: ${mapContainerHeight}px"
         x-range="${JSON.stringify(this.xRange)}"
         y-range="${JSON.stringify(this.yRange)}"
         background-image="${this.backgroundImage}"
@@ -107,7 +106,7 @@ class SwSPluginPosition extends LitElement {
         max-size="1"
         @input="${this.onUpdatePosition}"
       >
-      </sc-dot-map>
+      </sc-dots>
       <section
         class="command-container"
         style="
@@ -122,10 +121,9 @@ class SwSPluginPosition extends LitElement {
             ? html`
               <sc-button
                 @input="${this.propagateChange}"
-                value="Send"
                 height="36"
                 width="${commandContainerWidth - 40}"
-              ></sc-button>`
+              >Send</sc-button>`
             : html`
               <p class="info">
                 Please, select your position
